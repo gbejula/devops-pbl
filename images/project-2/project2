@@ -1,0 +1,127 @@
+> Update Ubuntu
+- sudo apt update
+``` sudo apt update
+Image
+
+> Step 1 -- Installing the Nginx web server
+- sudo ap install  nginx
+``` sudo ap install  nginx
+Image
+
+> Verify nginx was successfully installed
+- sudo systemctl status nginx
+``` sudo systemctl status nginx
+Image
+
+> Access the server locally in the Ubuntu terminal
+- curl http://localhost:80
+``` curl http://localhost:80
+Image
+
+> Access the server on the web browser using the public url
+
+Image
+
+> Step 2 -- Installing MySQL
+ - sudo apt install mysql-server
+ ``` sudo apt install mysql-server
+ 
+> Run security script to make MySql secure
+- sudo mysql_secure_installation
+``` sudo mysql_secure_installation
+Image
+
+> Exit MySql console
+``` exit
+
+> Step 3 -- Installing PHP
+- sudo apt install php-fpm php-mysql
+``` sudo apt install php-fpm php-mysql
+Image
+
+
+> Step 4 - Configuring Nginx to use PHP Processor 
+- Create the root web directory for my domain
+``` sudo mkdir /var/ww	w/projectLEMP
+
+- Assign ownership of the directory with the $USER environment variable
+``` sudo chown -R $USER:$USER /var/www/projectLEMP
+
+- Then, open a new configuration file in Nginx’s sites-available directory using your preferred command-line editor.
+``` sudo nano /etc/nginx/sites-available/projectLEMP
+
+```
+#/etc/nginx/sites-available/projectLEMP
+
+server {
+    listen 80;
+    server_name projectLEMP www.projectLEMP;
+    root /var/www/projectLEMP;
+
+    index index.html index.htm index.php;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+     }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+}
+
+```
+Image
+
+- Activate your configuration by linking to the config file from Nginx’s sites-enabled directory:
+
+``` sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled/
+Image
+
+- Test my configuration for syntax error 
+``` sudo nginx -t
+Image
+
+
+- Disable default Nginx host that is currently configured to listen on port 80
+``` sudo unlink /etc/nginx/sites-enabled/default
+Image
+
+- Reload Nginx to apply changes:
+``` sudo systemctl reload nginx 
+
+- Create an index.html file in that location so that we can test that your new server block works as expected:
+``` 
+sudo echo 'Hello LEMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectLEMP/index.html
+
+```
+
+- Open the browser and access the website with the URL using the IP address
+
+``` http://<ip_address>:80
+Image
+
+
+> Step 5 -- Testing PHP with NGINX
+- Create a test PHP file in the document root
+```sudo nano /var/www/projectLEMP/info.php
+Image
+
+```
+<?php
+phpinfo();
+
+```
+- Access the page in the web browser by visiting the domain name or public IP address that is set up in the Nginx configuration file, followed by /info.php:
+```http://`server_domain_or_IP`/info.php
+Image
+
+- After checking the relevant information about the PHP server through that page, it’s best to remove the file created as it contains sensitive information about the PHP environment and the Ubuntu server. Remove the sensitive info through:
+``` sudo rm /var/www/your_domain/info.php
+
+
