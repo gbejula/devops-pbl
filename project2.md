@@ -6,7 +6,7 @@
 
 `sudo apt install nginx`
 
-[Image](images/project-2/active-nginx-server.png)
+![Image](images/project-2/active-nginx-server.png)
 
 > Verify nginx was successfully installed
 
@@ -17,4 +17,21 @@
 
 - curl http://localhost:80
   `curl http://localhost:80`
-  [Images](images/project-2/terminal-view-of-server.png)
+
+![Image](images/project-2/terminal-view-of-server.png)
+
+> Access the server on the web browser using the public url
+
+![Image](images/project-2/browser-of-server.png)
+
+> Step 2 -- Installing MySQL
+
+- sudo apt install mysql-server
+  `sudo apt install mysql-server`
+
+> Run security script to make MySql secure
+
+- sudo mysql_secure_installation
+  `sudo mysql_secure_installation`
+
+![Image](images/project-2/mysql-working.png)
