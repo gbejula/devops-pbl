@@ -4,22 +4,22 @@
 
 - sudo apt install nginx
 
-`sudo apt install nginx`
+  `sudo apt install nginx`
 
-![Image](images/project-2/active-nginx-server.png)
+  ![Image](images/project-2/active-nginx-server.png)
 
 > Verify nginx was successfully installed
 
 - sudo systemctl status nginx
 
-`sudo systemctl status nginx`
+  `sudo systemctl status nginx`
 
 > Access the server locally in the Ubuntu terminal
 
 - curl http://localhost:80
   `curl http://localhost:80`
 
-![Image](images/project-2/terminal-view-of-server.png)
+  ![Image](images/project-2/terminal-view-of-server.png)
 
 > Access the server on the web browser using the public url
 
@@ -29,15 +29,19 @@
 
 - sudo apt install mysql-server
 
-`sudo apt install mysql-server`
+  `sudo apt install mysql-server`
 
 > Run security script to make MySql secure
 
 - sudo mysql_secure_installation
 
-`sudo mysql_secure_installation`
+  `sudo mysql_secure_installation`
 
-![Image](images/project-2/mysql-working.png)
+  ![Image](images/project-2/mysql-working.png)
+
+> Exit MySql console
+
+`exit`
 
 > Step 3 -- Installing PHP
 
@@ -46,6 +50,26 @@
   `sudo apt install php-fpm php-mysql`
   ![Image](images/project-2/installed-php.png)
 
-> Exit MySql console
+> Step 4 - Configuring Nginx to use PHP Processor
 
-`exit`
+- Create the root web directory for my domain
+  ```sudo mkdir /var/ww w/projectLEMP`
+
+- Assign ownership of the directory with the $USER environment variable
+  `sudo chown -R $USER:$USER /var/www/projectLEMP`
+
+- Then, open a new configuration file in Nginx’s sites-available directory using your preferred command-line editor.
+
+  ```sudo nano /etc/nginx/sites-available/projectLEMP`
+
+> Create a new blank file
+
+    ![image](images/project-2/config-file.png)
+
+- Activate your configuration by linking to the config file from Nginx’s sites-enabled directory:
+
+  `sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled/`
+
+- Test my configuration for syntax error
+  `sudo nginx -t`
+  ![image](images/project-2/config-worked.png)
