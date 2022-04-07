@@ -2,7 +2,7 @@
 
 > Step 1 -- Installing the Nginx web server
 
-- Sudo apt install nginx
+- sudo apt install nginx
 
 `sudo apt install nginx`
 
@@ -11,7 +11,8 @@
 > Verify nginx was successfully installed
 
 - sudo systemctl status nginx
-  `sudo systemctl status nginx`
+
+`sudo systemctl status nginx`
 
 > Access the server locally in the Ubuntu terminal
 
@@ -27,11 +28,23 @@
 > Step 2 -- Installing MySQL
 
 - sudo apt install mysql-server
-  `sudo apt install mysql-server`
+
+`sudo apt install mysql-server`
 
 > Run security script to make MySql secure
 
 - sudo mysql_secure_installation
-  `sudo mysql_secure_installation`
+
+`sudo mysql_secure_installation`
 
 ![Image](images/project-2/mysql-working.png)
+
+> Step 3 -- Installing PHP
+
+- sudo apt install php-fpm php-mysql
+  `sudo apt install php-fpm php-mysql`
+  ![Image](images/project-2/installed-php.png)
+
+> Exit MySql console
+
+`exit`
