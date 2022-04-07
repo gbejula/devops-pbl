@@ -94,4 +94,24 @@
 
 - Open the browser and access the website with the URL using the IP address
 
-  ![image](images/project-2/browser-of-server.png)
+  ![image](images/project-2/browser-check-LEMP-file.png)
+
+> Step 5 -- Testing PHP with NGINX
+
+- Create a test PHP file in the document root
+
+  `sudo nano /var/www/projectLEMP/info.php`
+
+- Check php info
+
+  ```
+  <?php
+  phpinfo();
+
+  ```
+
+  ![Image](images/project-2/php-info-page.png)
+
+- Remove sensitive php info
+
+  `sudo rm /var/www/your_domain/info.php`
