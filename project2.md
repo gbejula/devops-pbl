@@ -75,6 +75,7 @@
 - Test my configuration for syntax error
 
   `sudo nginx -t`
+
   ![image](images/project-2/config-worked.png)
 
 - Disable default Nginx host that is currently configured to listen on port 80
@@ -115,3 +116,69 @@
 - Remove sensitive php info
 
   `sudo rm /var/www/your_domain/info.php`
+
+> Step 6 – Retrieving data from MySQL database with PHP (continued)
+
+- Connect to the MySQL console using the root account
+  `sudo mysql`
+
+- Create a new database using
+  `CREATE DATABASE `example_database`;`
+
+- Grant privileges to the user
+
+  `CREATE USER 'example_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';`
+
+- Exit MySQL shell
+
+  `exit`
+
+- Test the user account
+
+  `mysql -u example_user -p`
+
+- Show the MySQL Databases
+
+  `SHOW DATABASES;`
+  ![Images](images/project-2/mysql-todo-list-terminal.png)
+
+- Insert context into the table
+
+  `NSERT INTO example_database.todo_list (content) VALUES ("My first important item");`
+
+- Select the all in the database
+
+  `SELECT * FROM example_database.todo_list;`
+
+  ![Images](images/project-2/mysql-table-content.png)
+
+- Edit MySQL from console
+
+  ```
+  nano /var/www/projectLEMP/todo_list.php
+
+  ADD CONTENT
+
+  <?php
+  $user = "example_user";
+  $password = "password";
+  $database = "example_database";
+  $table = "todo_list";
+
+  try {
+    $db = new PDO("mysql:host=localhost;dbname=$database", $user, $password);
+    echo "<h2>TODO</h2><ol>";
+    foreach($db->query("SELECT content FROM $table") as $row) {
+      echo "<li>" . $row['content'] . "</li>";
+    }
+    echo "</ol>";
+  } catch (PDOException $e) {
+      print "Error!: " . $e->getMessage() . "<br/>";
+      die();
+  }
+
+  ```
+
+- Access the todo-list on browser
+
+  ![Images](images/project-2/mysql-todo-list-browser.png)
