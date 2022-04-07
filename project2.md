@@ -42,6 +42,7 @@
 > Step 3 -- Installing PHP
 
 - sudo apt install php-fpm php-mysql
+
   `sudo apt install php-fpm php-mysql`
   ![Image](images/project-2/installed-php.png)
 
