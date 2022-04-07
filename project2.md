@@ -53,23 +53,45 @@
 > Step 4 - Configuring Nginx to use PHP Processor
 
 - Create the root web directory for my domain
-  ```sudo mkdir /var/ww w/projectLEMP`
+
+  `sudo mkdir /var/ww w/projectLEMP`
 
 - Assign ownership of the directory with the $USER environment variable
+
   `sudo chown -R $USER:$USER /var/www/projectLEMP`
 
 - Then, open a new configuration file in Nginx’s sites-available directory using your preferred command-line editor.
 
-  ```sudo nano /etc/nginx/sites-available/projectLEMP`
+  `sudo nano /etc/nginx/sites-available/projectLEMP`
 
 > Create a new blank file
 
-    ![image](images/project-2/config-file.png)
+![image](images/project-2/config-file.png)
 
 - Activate your configuration by linking to the config file from Nginx’s sites-enabled directory:
 
   `sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled/`
 
 - Test my configuration for syntax error
+
   `sudo nginx -t`
   ![image](images/project-2/config-worked.png)
+
+- Disable default Nginx host that is currently configured to listen on port 80
+
+  `sudo unlink /etc/nginx/sites-enabled/default`
+
+- Reload Nginx to apply changes:
+
+  `sudo systemctl reload nginx`
+
+- Create an index.html file in that location so that we can test that your new server block works as expected:
+
+  ```
+  sudo echo 'Hello LEMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectLEMP/index.html
+
+  ```
+
+- Open the browser and access the website with the URL using the IP address
+
+  ![image](images/project-2/browser-of-server.png)
