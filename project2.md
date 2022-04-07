@@ -140,6 +140,7 @@
 - Show the MySQL Databases
 
   `SHOW DATABASES;`
+
   ![Images](images/project-2/mysql-todo-list-terminal.png)
 
 - Insert context into the table
