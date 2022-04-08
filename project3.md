@@ -29,16 +29,17 @@
 ## Set main directory for project
 
 - Create a new directory for the To-Do project
+
   `mkdir Todo`
 
 - Change directory to the Todo folder and initialize the project
 
-```
-cd Todo
-npm init
-```
+  ```
+  cd Todo
+  npm init
+  ```
 
-> Install Expressjs
+> **INSTALL EXPRESSJS**
 
 `npm install express`
 
@@ -54,6 +55,7 @@ npm init
 - Add code to file index and run using:
 
   `node index.js`
+
   ![Image](images/project-3/server-running.png)
 
 - Check server in the browser by add port 5000 to public ip
@@ -76,3 +78,56 @@ npm init
   cd routes
   touch api.js
   ```
+
+  > **CREATE MODELS DIRECTORY IN THE MAIN DIRECTORY AND INSTALL MONGOOS**
+
+  `npm install mongoose`
+
+- Create models folder, change to the folder and create a file
+
+  ```
+  mkdir models
+  cd models
+  touch todo.js
+
+  or
+
+  mkdir models && cd models && touch todo.js
+  ```
+
+- Add code in the todo file
+
+> **SET UP MONGODB DATABASE**
+
+- Create mongodb account and database
+
+- Create .env file in the root directory
+
+  ```
+  cd Todo
+  touch .env
+  vi .env
+
+  ```
+
+- Add the connection string to access the database
+
+  Ensure to update <username>, <password>, <network-address> and <database> according to your setup
+
+  `DB = 'mongodb+srv://<username>:<password>@<network-address>/<dbname>?retryWrites=true&w=majority'`
+
+  ![Db connected](images/project-3/db_connected.png)
+
+- Check routes in API routes using Postman
+
+  `post request`
+
+  ![Post Image](images/project-3/post-request.png)
+
+  `get request`
+
+  ![Get Image](images/project-3/get-request.png)
+
+  `delete request`
+
+  ![Delete Image](images/project-3/delete-request.png)
