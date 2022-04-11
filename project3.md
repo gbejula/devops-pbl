@@ -187,54 +187,157 @@ cd components
 
 `vi Input.js`
 
-import React, { Component } from 'react';
-import axios from 'axios';
+```
 
-class Input extends Component {
+  import React, { Component } from 'react';
+  import axios from 'axios';
 
-state = {
-action: ""
-}
+  class Input extends Component {
 
-addTodo = () => {
-const task = {action: this.state.action}
+  state = {
+  action: ""
+  }
 
-    if(task.action && task.action.length > 0){
-      axios.post('/api/todos', task)
-        .then(res => {
-          if(res.data){
-            this.props.getTodos();
-            this.setState({action: ""})
-          }
-        })
-        .catch(err => console.log(err))
-    }else {
-      console.log('input field required')
-    }
+  addTodo = () => {
+  const task = {action: this.state.action}
 
-}
+      if(task.action && task.action.length > 0){
+        axios.post('/api/todos', task)
+          .then(res => {
+            if(res.data){
+              this.props.getTodos();
+              this.setState({action: ""})
+            }
+          })
+          .catch(err => console.log(err))
+      }else {
+        console.log('input field required')
+      }
 
-handleChange = (e) => {
-this.setState({
-action: e.target.value
-})
-}
+  }
 
-render() {
-let { action } = this.state;
-return (
+  handleChange = (e) => {
+  this.setState({
+  action: e.target.value
+  })
+  }
 
-<div>
-<input type="text" onChange={this.handleChange} value={action} />
-<button onClick={this.addTodo}>add todo</button>
-</div>
-)
-}
-}
+  render() {
+  let { action } = this.state;
+  return (
 
-export default Input
+  <div>
+  <input type="text" onChange={this.handleChange} value={action} />
+  <button onClick={this.addTodo}>add todo</button>
+  </div>
+  )
+  }
+  }
+
+  export default Input
+```
 
 - Install Axios in the root (Todo) directory which is a Promise based HTTP client for the browser and node.js. Go back to the Todo directory
 
-`cd ../..`
-`npm install axios`
+  ```
+
+  cd ../..
+  npm install axios
+  ```
+
+- Go back to components directory
+
+  ```
+
+  cd src/components
+  vi ListTodo.js
+  ```
+
+  ```
+
+    import React from 'react';
+
+  const ListTodo = ({ todos, deleteTodo }) => {
+
+  return (
+  <ul>
+  {
+  todos &&
+  todos.length > 0 ?
+  (
+  todos.map(todo => {
+  return (
+  <li key={todo._id} onClick={() => deleteTodo(todo._id)}>{todo.action}</li>
+  )
+  })
+  )
+  :
+  (
+  <li>No todo(s) left</li>
+  )
+  }
+  </ul>
+  )
+  }
+  ```
+
+  - Edit the Todo.js also,
+
+  ```
+
+    import React, {Component} from 'react';
+  import axios from 'axios';
+
+  import Input from './Input';
+  import ListTodo from './ListTodo';
+
+  class Todo extends Component {
+
+  state = {
+  todos: []
+  }
+
+  componentDidMount(){
+  this.getTodos();
+  }
+
+  getTodos = () => {
+  axios.get('/api/todos')
+  .then(res => {
+  if(res.data){
+  this.setState({
+  todos: res.data
+  })
+  }
+  })
+  .catch(err => console.log(err))
+  }
+
+  deleteTodo = (id) => {
+
+      axios.delete(`/api/todos/${id}`)
+        .then(res => {
+          if(res.data){
+            this.getTodos()
+          }
+        })
+        .catch(err => console.log(err))
+
+  }
+
+  render() {
+  let { todos } = this.state;
+
+      return(
+        <div>
+          <h1>My Todo(s)</h1>
+          <Input getTodos={this.getTodos}/>
+          <ListTodo todos={todos} deleteTodo={this.deleteTodo}/>
+        </div>
+      )
+
+  }
+  }
+
+  export default Todo;
+  ```
