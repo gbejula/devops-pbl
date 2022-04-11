@@ -281,7 +281,7 @@ cd components
   }
   ```
 
-  - Edit the Todo.js also,
+- Edit the Todo.js also,
 
   ```
 
@@ -342,9 +342,9 @@ cd components
   export default Todo;
   ```
 
-  - Add codes for styling in both .App.css and .index.css
+- Add codes for styling in both .App.css and .index.css
 
-  - Change to Todo directory and run:
+- Change to Todo directory and run:
 
   `cd ../..`
 
