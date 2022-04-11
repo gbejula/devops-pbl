@@ -285,7 +285,7 @@ cd components
 
   ```
 
-    import React, {Component} from 'react';
+  import React, {Component} from 'react';
   import axios from 'axios';
 
   import Input from './Input';
@@ -341,3 +341,13 @@ cd components
 
   export default Todo;
   ```
+
+  - Add codes for styling in both .App.css and .index.css
+
+  - Change to Todo directory and run:
+
+  `cd ../..`
+
+  `npm run dev`
+
+  ![Todo App](images/project-3/Todo-app-running-in-browser.png)
