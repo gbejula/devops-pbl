@@ -191,3 +191,9 @@
 - Check the application in the browser
 
   ![application in the browser](images/project-4/browser-view.png)
+
+- Resources used.
+
+  `https://www.techrepublic.com/article/how-to-create-users-and-groups-in-linux-from-the-command-line/`
+
+  `https://www.tomshardware.com/how-to/change-passwords-in-linux`
