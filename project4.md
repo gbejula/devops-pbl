@@ -194,6 +194,6 @@
 
 - Resources used.
 
-  `https://www.techrepublic.com/article/how-to-create-users-and-groups-in-linux-from-the-command-line/`
+  Website used for creating users and groups [Link](https://www.techrepublic.com/article/how-to-create-users-and-groups-in-linux-from-the-command-line/).
 
-  `https://www.tomshardware.com/how-to/change-passwords-in-linux`
+  Website used to change user password in linux [Link](https://www.tomshardware.com/how-to/change-passwords-in-linux).
