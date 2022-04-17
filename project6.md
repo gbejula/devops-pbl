@@ -154,7 +154,48 @@
 
 - No logs directory is needed for the database server, hence it is not created.
 
-> ## STEP 3: INSTALL WORDPRESS ON WEB SERVER
+> ## STEP 3: INSTALL MYSQL ON THE DB SERVER EC2
+
+- Update the repository
+
+  `sudo yum -y update`
+
+- Install the Mysql-Server on the Database Server
+
+  `sudo yum install mysql-server -y`
+  `sudo mysql_secure_installation`
+
+- Login into mysql
+
+  `sudo mysql`
+
+- Create a database
+
+  `create database wordpress;`
+
+- Create a user and password in MySQL server
+
+  `CREATE USER 'example_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';`
+
+- Grant permission to the user
+
+  `GRANT ALL ON example_database.* TO 'example_user'@'%';`
+
+- Flush privileges to save the changes made
+
+  `flush privileges;`
+
+- Edit the configure file of mysql so it can be reached for anywhere at the development level. This is not the case for production
+
+  ```
+  sudo vi /etc/my.cnf
+  add - [mysqld]
+  bind-address=0.0.0.0
+  ```
+
+  ![Edit MySql config file](images/project-6/edit-mysql-config-file.png)
+
+> ## STEP 4: INSTALL WORDPRESS ON WEB SERVER
 
 - Update the repository
 
@@ -202,7 +243,7 @@
   sudo cp wordpress/wp-config-sample.php wordpress/wp-config.php
   sudo cp -R wordpress/. /var/www/html
   cd /var/www/html
-  sudo yum install mysql-server to act as client to reach the server
+  sudo yum install mysql-server to act as client to reach the database server.
   sudo systemctl start mysqld
   sudo systemctl enable mysqld
   sudo vi wp-config.php
@@ -212,3 +253,24 @@
 
   sudo systemctl restart httpd - to reload and keep changes
   ```
+
+- To confirmt the Apache is working, check the ip address on the browser
+
+  ![Red info with apache](images/project-6/webserver-browser.png)
+
+- Disable the apache default page using the command and restart the httpd
+
+  ```
+  sudo mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.backup
+  sudo systemctl restart httpd
+  ```
+
+- Configure SELinux Policies
+
+  ```
+  sudo chown -R apache:apache /var/www/html/wordpress
+  sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
+  sudo setsebool -P httpd_can_network_connect=1
+  ```
+
+>
