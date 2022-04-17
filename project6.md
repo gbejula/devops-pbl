@@ -18,3 +18,16 @@
 - Check the all the mounts and free space on the web server using
 
   `df -h`
+
+- Create a partition on one of the disk and follow the same steps for all the 3 disks
+
+  ```
+
+  sudo gdisk /dev/nvme1n1
+  type n
+  press enter three times to accept the defaults
+  type 8e00
+  p to preview
+  w to write
+  y to complete the process
+  ```
