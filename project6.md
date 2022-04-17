@@ -163,6 +163,7 @@
 - Install the Mysql-Server on the Database Server
 
   `sudo yum install mysql-server -y`
+
   `sudo mysql_secure_installation`
 
 - Login into mysql
@@ -273,4 +274,20 @@
   sudo setsebool -P httpd_can_network_connect=1
   ```
 
->
+> ## STEP 5: CONFIGURE WORDPRESS TO CONNECT TO REMOTE DATABASE
+
+- Added private ip address of database to the webserver security group
+
+- Login to MYSQL remotely from the backend
+
+  `sudo mysql -u admin -p -h <DB-Server-Private-IP-address>`
+
+  ![Remote connection](images/project-6/access-db-from-webserver.png)
+
+- Access wordpress from the browser by checking the ip address again:
+
+  `http://<web-server-public-address>`
+
+  ![Access wordpress](images/project-6/wordpress-homescreen.png)
+
+  ![Wordpress configured](images/project-6/wordpress-login.png)
