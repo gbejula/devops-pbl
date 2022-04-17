@@ -99,3 +99,43 @@
 - Mount directory to store the website files on apps-lv logical volume prepared for it
 
   `sudo mount /dev/webdata-vg/apps-lv /var/www/html/`
+
+- Use rsync utility to backup all the files in the log directory /var/log into /home/recovery/logs (This is required before mounting the file system)
+
+  `sudo rsync -av /var/log/. /home/recovery/logs/`
+
+- Mount /var/log on logs-lv logical volume. (Note that all the existing data on /var/log will be deleted.
+
+  `sudo mount /dev/webdata-vg/logs-lv /var/log`
+
+- Restore log files back into /var/log directory
+
+  `sudo rsync -av /home/recovery/logs/. /var/log`
+
+- Update /etc/fstab file so that the mount configuration will persist after restart of the server.
+
+- Check the UUID of the device that will be used to update the /etc/fstab file.
+
+  `sudo blkid`
+
+- Copy the UUID and edit /etc/fstab file
+
+  ```
+  sudo vi /etc/fstab
+
+  add the UUIDs and add comment to show that it is for wordpress
+  UUID=5a711846-1d03-41d4-81f1-803a2e5f4c9f /var/www/html ext4 defaults 0 0
+  UUID=6349f392-b3c1-4d9f-b61d-c60de229fdd6 /var/log ext4 defaults 0 0
+  ```
+
+- Run command to show ensure there is no error. If the command returns anything, it means there is error else all is fine.
+
+  `sudo mount -a`
+
+- Reload the daemon to keep changes
+
+  `sudo system daemon-reload`
+
+- Verify the set up using
+
+  `df -h`
