@@ -1,10 +1,10 @@
 # PROJECT 6: WEB SOLUTION WITH WORDPRESS
 
-> ## STEP 1 -- PREPARE THE WEB SERVER
+> ## STEP 1: PREPARE THE WEB SERVER
 
 - Create 2 Red Hat instances
 
-  - The first Red Hat install is for the web server
+  - The first Red Hat instance is for the web server and the other Red Hat instance is for the database sever
   - Create 3 volumes for the web server, one at a time
   - Click on create volume to create the volumes
   - Each volume will have a size of 10GB and must be in the availability region of the web server
@@ -36,6 +36,8 @@
 
   `lsblk`
 
+  ![Create partitions](images/project-6/create-partition.png)
+
 - Install the lvm2 package to use the command to check available partitions
 
   ```
@@ -57,11 +59,17 @@
   sudo pvs
   ```
 
+  ![Physical volumes created](images/project-6/create-physical-volume.png)
+  ![pvs image](images/project-6/show-volumes.png)
+
 - Add all 3 physical volumes PVs to form a volume group VG using vgcreate. Name it webdata-vg and check the volume group
 
   `sudo vgcreate webdata-vg /dev/xvdf1 /dev/xvdg1 /dev/xvdh1`
 
   `sudo vgs`
+
+  ![Volume group create](images/project-6/create-volume-group.png)
+  ![show volume group](images/project-6/show-created-volumegroup.png)
 
 - Create 2 logical volumes using the lvcreate command. apps-lv (Use half of the PV size), and logs-lv Use the remaining space of the PV size. NOTE: apps-lv will be used to store data for the Website while, logs-lv will be used to store data for logs.
 
@@ -125,7 +133,7 @@
 
   add the UUIDs and add comment to show that it is for wordpress
   UUID=5a711846-1d03-41d4-81f1-803a2e5f4c9f /var/www/html ext4 defaults 0 0
-  UUID=6349f392-b3c1-4d9f-b61d-c60de229fdd6 /var/log ext4 defaults 0 0
+  UUID=6349f392-b3c1-4d9f-b61d-c60de229fdd6 /var/log      ext4 defaults 0 0
   ```
 
 - Run command to show ensure there is no error. If the command returns anything, it means there is error else all is fine.
@@ -139,3 +147,68 @@
 - Verify the set up using
 
   `df -h`
+
+> ## STEP 2: PREPARE THE DATABASE SERVER
+
+- The database server is prepared the same way. However, instead of apps-lv, we use db-lv and we mount it to /db directory instead of /var/www/html
+
+- No logs directory is needed for the database server, hence it is not created.
+
+> ## STEP 3: INSTALL WORDPRESS ON WEB SERVER
+
+- Update the repository
+
+  `sudo yum -y update`
+
+  Note: `yum` is used in Red Hat instead `apt` used in Ubuntu and `-y` accepts all the defaults
+
+- Install wget, Apache and it's dependencies.
+
+  `sudo yum -y install wget httpd php php-mysqlnd php-fpm php-json`
+
+- Start Apache
+
+  ```
+  sudo systemctl enable httpd
+  sudo systemctl start httpd
+  ```
+
+- Install PHP and it's dependencies
+
+  ```
+  sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+  sudo yum install yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+  sudo yum module list php
+  sudo yum module reset php
+  sudo yum module enable php:remi-7.4
+  sudo yum install php php-opcache php-gd php-curl php-mysqlnd
+  sudo systemctl start php-fpm
+  sudo systemctl enable php-fpm
+  sudo setsebool -P httpd_execmem 1
+  ```
+
+- Restart Apache
+
+  `sudo systemctl restart httpd`
+
+- Download wordpress and copy wordpress to /var/www/html
+
+  ```
+  mkdir wordpress
+  cd wordpress
+  sudo wget http://wordpress.org/latest.tar.gz
+  sudo tar xzvf latest.tar.gz
+  sudo rm -rf latest.tar.gz
+  sudo cp wordpress/wp-config-sample.php wordpress/wp-config.php
+  sudo cp -R wordpress/. /var/www/html
+  cd /var/www/html
+  sudo yum install mysql-server to act as client to reach the server
+  sudo systemctl start mysqld
+  sudo systemctl enable mysqld
+  sudo vi wp-config.php
+
+  once the file is open in vim
+  edit database name created in db_server, username in db_server, password in db_server and the private ip address of the db_server
+
+  sudo systemctl restart httpd - to reload and keep changes
+  ```
