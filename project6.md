@@ -89,7 +89,7 @@
   sudo lsblk
   ```
 
-- Format the logical volumes using the mkfs.ext4 with the ext4 filesystem
+- Format the logical volumes using the mkfs with the ext4 filesystem
 
   ```
   sudo mkfs -t ext4 /dev/webdata-vg/apps-lv
@@ -291,3 +291,7 @@
   ![Access wordpress](images/project-6/wordpress-homescreen.png)
 
   ![Wordpress configured](images/project-6/wordpress-login.png)
+
+- Resource
+
+  [YouTube](https://www.youtube.com/watch?v=fJnjuG-CK4g)
