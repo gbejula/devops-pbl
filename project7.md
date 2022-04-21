@@ -172,3 +172,33 @@
 - Check which port is used by NFS and open it using Security Groups
 
   ![check port](images/project-7/rpcinfo.png)
+
+- Open the following ports for NFS server to be accessible from the client
+
+  `TCP 111, UDP 111, UDP 2049, TCP 2049`
+
+> ## CONFIGURE THE DATABASE SERVER
+
+- Create an Ubuntu instance for database
+
+  `sudo apt update`
+
+- Install the Mysql-Server on the Database Server
+
+  `sudo apt install mysql-server`
+
+- Create a database
+
+  `create database tooling;`
+
+- Create a user and password in MySQL server
+
+  `CREATE USER 'webaccess'@'%' IDENTIFIED WITH mysql_native_password BY 'password';`
+
+- Grant permission to the user
+
+  `GRANT ALL ON tooling.* TO 'webaccess'@'%';`
+
+- Flush privileges to save the changes made
+
+  `flush privileges;`
