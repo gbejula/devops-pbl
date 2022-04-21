@@ -275,4 +275,31 @@
 
   ![other images](images/project-7/otherimg1.png)
   ![other images](images/project-7/otherimg2.png)
+
+- Update the function.php file so that the database can be access from the Web Server
+
+  ```
+  sudo yum install mysql
+  ```
+
+  ![Edit function.php file](images/project-7/edit-function-php.png)
+
+- Check user in the database
+
+  ![check user](images/project-7/check-user-in-db.png)
+
   ![access database from webserver](images/project-7/access-database-from-webserver.png)
+
+- After successfully access of the database from the Web Server, we restart the Apache httpd file
+
+  ```
+  sudo systemctl start httpd
+  sudo systemctl enable httpd
+  sudo systemctl status httpd
+  ```
+
+- Visit the public address of the Web Server on the browser
+
+  ![Apache info page](images/project-7/apache-infopage.png)
+
+  ![Login page](images/project-7/php-login-page.png)
