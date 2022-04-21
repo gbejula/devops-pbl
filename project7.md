@@ -65,7 +65,6 @@
 
   `sudo vgs`
 
-
 - Create 2 logical volumes using the lvcreate command. apps-lv (Use half of the PV size), and logs-lv Use the remaining space of the PV size. NOTE: apps-lv will be used to store data for the Website while, logs-lv will be used to store data for logs.
 
   ```
@@ -92,9 +91,8 @@
   sudo mkfs -t xfs /dev/webdata-vg/lv-logs
   sudo mkfs -t xfs /dev/webdata-vg/lv-opt
   ```
-  
-  - ![format with xfs](images/project-7/format-with-xfs.png)
 
+  - ![format with xfs](images/project-7/format-with-xfs.png)
 
 - Create mount points
 
@@ -179,7 +177,7 @@
 
 > ## CONFIGURE THE DATABASE SERVER
 
-- Create an Ubuntu instance for database
+- Create an Ubuntu instance for database server
 
   `sudo apt update`
 
@@ -203,4 +201,78 @@
 
   `flush privileges;`
 
+- Create security group in ubuntu instance
+
+  ```
+  mysql/aurora
+  with port 3306
+  ```
+
+- Update mysql config file:
+
+  `set bind-address=0.0.0.0`
+
 > ## PREPARE THE WEB SERVERS
+
+- Launch new EC2 with RH8L OS
+
+- Install NFS client
+
+  `sudo yum install nfs-utils nfs4-acl-tools -y`
+
+- Create a /var/www directory and mount the NFS server exports
+
+  ```
+  sudo mkdir /var/www
+  sudo mount -t nfs -o rw,nosuid 172.31.31.91:/mnt/apps /var/www
+  ```
+
+- Edit the /etc/fstab file in Web Server to be able to reach the NFS server
+
+- Ensure the added configuration is without error and it persists.
+
+  ```
+  sudo mount -a -- it is error any output, there is an error, else it config added successfully.
+  sudo systemctl daemon-reload -- to persist
+  ```
+
+  ![nfs-in-webserver](images/project-7/nfs-config-in-webserver.png)
+
+- Install [Remi's repostitory](http://www.servermom.org/how-to-enable-remi-repo-on-centos-7-6-and-5/2790/), Apache and PHP.
+
+  ```
+  sudo yum install httpd -y
+  sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+  sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+  sudo dnf module reset php
+  sudo dnf module enable php:remi-7.4
+  sudo dnf install php php-opcache php-gd php-curl php-mysqlnd
+  sudo systemctl start php-fpm
+  sudo systemctl enable php-fpm
+  sudo setsebool -P httpd_execmem 1
+  ```
+
+- Repeat steps 1-5 for another Web Server which serves a backup server for redundancy
+
+- Fork the tooling source code from [Darey.io Github Account](https://github.com/darey-io/tooling) to your Github account.
+
+- Deploy the tooling website’s code to the Webserver. Ensure that the html folder from the repository is deployed to /var/www/html
+
+  ```
+  ls /var/www
+  ls /var/log
+  sudo ls /var/log/httpd
+  sudo vi /etc/fstab
+
+  Note 1: Do not forget to open TCP port 80 on the Web Server.
+  Note 2: If you encounter 403 Error – check permissions to your /var/www/html folder and also disable SELinux
+  sudo setenforce 0
+  To make this change permanent – open following config file sudo vi /etc/sysconfig/selinux and set
+  SELINUX=disabledthen restrt httpd.
+  ```
+
+- Install mysql client in the Web server to access the databases server
+
+  ![other images](images/project-7/otherimg1.png)
+  ![other images](images/project-7/otherimg2.png)
+  ![access database from webserver](images/project-7/access-database-from-webserver.png)
