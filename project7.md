@@ -87,4 +87,10 @@
   sudo lsblk
   ```
 
-- Format the logical volumes using the mkfs with the ext4 filesystem
+- Format the logical volumes using the mkfs with the nfs filesystem
+
+  ```
+  sudo mkfs -t nfs /dev/webdata-vg/lv-apps
+  sudo mkfs -t nfs /dev/webdata-vg/lv-logs
+  sudo mkfs -t nfs /dev/webdata-vg/lv-opt
+  ```
