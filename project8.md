@@ -86,3 +86,11 @@
   BalancerMember http://Web1:80 loadfactor=5 timeout=1
   BalancerMember http://Web2:80 loadfactor=5 timeout=1
   ```
+
+Resources to read about:
+
+- [Load balancing](https://www.nginx.com/resources/glossary/load-balancing/)
+
+- [Layer 4 load balancing](https://www.nginx.com/resources/glossary/layer-4-load-balancing/)
+
+- [Layer 7 load balancing](https://www.nginx.com/resources/glossary/layer-7-load-balancing/)
