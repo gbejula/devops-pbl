@@ -9,3 +9,14 @@
 - We are enchancing architecture prepared in Project 8 by adding a Jenkins server, configure a job to automatically deploy source codes changes from Git to NFS Server.
 
   ![Image](images/project-9/Diagram-for-project9.png)
+
+> ## INSTALL AND CONFIGURE JENKINS SERVER
+
+- Create an AWS EC2 server based on Ubuntu server 20.04 LTS and name it "Jenkins" with TCP port 8080 opened in the inbound rule
+
+- Install JDK
+
+  ```
+  sudo apt update
+  sudo apt install default-jdk-headless
+  ```
