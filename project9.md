@@ -65,3 +65,15 @@
 - Click on save and continue
 
   ![Save configuration](images/project-9/jenkins-last-config-page.png)
+
+- Jenkins is full ready for deployment
+
+  ![Jenkins Ready](images/project-9/jenkins-is-ready.png)
+
+> ## CONFIGURE JENKINS TO RETRIEVE SOURCE CODE FROM GITHUB USING WEBHOOKS
+
+- We will configure a simple Jenkins job/project that will be triggered by GitHub webhooks and will execute a build task to retrieve codes from GitHub and store it locally on Jenkins server.
+
+- Enable webhooks in GitHub repository settings for the tooling forked repository in project 7
+
+  ![WebHooks](images/project-9/jenkins-webhooks.png)
