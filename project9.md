@@ -26,10 +26,42 @@
   ```
   wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
   sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-  sudo apt-get update
+  sudo apt update
   sudo apt-get install jenkins
   ```
 
 - Verify Jenkins is up and running
 
   `sudo systemctl status jenkins`
+
+  ![Jenkins status](images/project-9/jenkins-running-status.png)
+
+- Perform initial Jenkins setup from the browswer by accessing:
+
+  - Note: open port 8080 by creating a TCP inbound rule in the security group
+
+  `http://jenkins-server-public-ip-address:8080`
+
+  ![Jenkins-in-the-browswer](images/project-9/Jenkins-getting-started.png)
+
+- Retrieve the administrator password from the server using:
+
+  `sudo cat /var/lib/jenkins/secrets/initialAdminPassword`
+
+  ![Jenkins-password](images/project-9/jenkins-initial-psd.png)
+
+- Enter the password in the admin page and click continue
+
+  ![Jenkins Plugins](images/project-9/jenkins-install-plugins.png)
+
+- Click Install suggested plugins
+
+  ![Plugins](images/project-9/tools-installed.png)
+
+- Create admin account after plugins installation is complete.
+
+  ![Create admin account](images/project-9/create-an-admin-account.png)
+
+- Click on save and continue
+
+  ![Save configuration](images/project-9/jenkins-last-config-page.png)
