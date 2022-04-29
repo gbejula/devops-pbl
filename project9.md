@@ -133,3 +133,50 @@
 - By default, the artifacts are stored on Jenkins server locally
 
   `ls /var/lib/jenkins/jobs/tooling_github/builds/<build_number>/archive/`
+
+> ## CONFIGURE JENKINS TO COPY FILES TO NFS SERVER VIA SSH
+
+- Now we have our artifacts saved locally on Jenkins server, the next step is to copy them to our NFS server to /mnt/apps directory.
+
+  _Jenkins is a highly extendable application and there are 1400+ plugins available. We will need a plugin that is called "Publish Over SSH"._
+
+- Install "Publish Over SSH"
+
+  _On main dashboard select "Manage Jenkins" and choose "Manage Plugins" menu item.
+  On "Available" tab search for "Publish Over SSH" plugin and install it_
+
+  _After installation you should see this:_
+
+  ![PublishOverSSH](images/project-9/publish-over-ssh.png)
+
+- Configure the job/project to copy artifacts over to the NFS Server
+
+  _On main dashboard select "Manage Jenkins" and choose "Configure System" menu item_
+
+  _Scroll down to Publish over SSH plugin configuration section and configure it to be able to connect to your NFS server:_
+
+  _Passphase should be empty_
+
+  _Path to key should be empty_
+
+  _key: open your .pem key using an text editor and copy the content in the key textbox_
+
+  _Click on add SSH Server to add the details_
+
+  _Name: You can use any name of your choice but it is better to use something descriptive_
+
+  _Hostname: this will be the private ip address of your NFS Server_
+
+  _username: ec2-user (since NFS server is based on EC2 with RHEL 8)_
+
+  _Remote directory: /mnt/apps since our Web Servers use it as a mointing point to retrieve files from the NFS server_
+
+- Test the configuration and make sure the connection returns Success.
+
+  _Remember, that TCP port 22 on NFS server must be open to receive SSH connections._
+
+  ![success](images/project-9/success.png)
+
+- Save the configuration. Then open your Jenkins job/project configuration page and add another one "Post-build Action"
+
+  ![Send over SSH](images/project-9/choose-ssh.png)
