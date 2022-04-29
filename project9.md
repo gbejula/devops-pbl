@@ -180,3 +180,28 @@
 - Save the configuration. Then open your Jenkins job/project configuration page and add another one "Post-build Action"
 
   ![Send over SSH](images/project-9/choose-ssh.png)
+
+  ![Another build post](images/project-9/another-build-post.png)
+
+- Save this configuration and go ahead, change something in README.MD file in your GitHub Tooling repository. Webhook will trigger a new job and it will be seen in the "Console Output"
+
+- However, if you get an error that the _permission denied_ shown below:
+
+  ![error without changes in NFS](images/project-9/error-without-changes.png)
+
+- Login to the NFS server from terminal and run the following:
+
+  ```
+  sudo chown -R nobody:nobody /mnt
+  sudo chmod -R 777 /mnt
+  ```
+
+- Build the job again and it should be successful.
+
+  ![Success after changes in NFS Server](images/project-9/success-after-changes-in-nfs.png)
+
+- Run the command below to see the changes made in the README.md file
+
+  `sudo cat /mnt/apps/README.md`
+
+  ![Checking changes in README](images/project-9/readmefile-changed.png)
