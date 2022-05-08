@@ -69,3 +69,21 @@
 - The build did not automatic trigger. I changed the files in the README.md four times but it still did not automatically trigger.
 
 - Looked and discovered that the "GitHub hook trigger for GITScm polling" was not checked. Then, I checked the option.
+
+- The changed the README.md file again, and the auto build was triggered.
+
+  ![auto build](images/project-11/auto-build.png)
+
+- Changes in github and checking through the console is the same
+
+  ![git changes](images/project-11/changes-in-github.png)
+
+- Checking the changes in the Jenkins build artifacts using:
+
+  ```
+  cd /var/lib/jenkins/jobs/<new of build>/builds/<build_number>/archive/
+  cd /var/lib/jenkins/jobs/ansible-in-jenkins/builds/6/archive/
+  cat README.md
+  ```
+
+  ![console changes](images/project-11/same-changes-in-console.png)
