@@ -34,7 +34,7 @@
   - In the content type, select 'application-json'
   - Click 'Add'
 
-  ![webhook image with ip]
+  ![webhook image with ip](images/project-11/webhook.png)
 
 - Configure the freestyle Jenkins build job with name - jenkins-in-ansible
 
@@ -58,7 +58,7 @@
 
   _The build failed_
 
-  _I discovered that the needed to change the branch to *main* instead of *master* since it has been changed by github_
+  _I discovered that the needed to change the branch to **main** instead of **master** since it has been changed by github_
 
   _The build was now successfully after the change_
 
