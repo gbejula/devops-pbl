@@ -2,7 +2,7 @@
 
 - This Project will make you appreciate DevOps tools even more by making most of the routine tasks automated with Ansible Configuration Management, at the same time you will become confident at writing code using declarative language such as YAML. The
 
-  ![design](images/project-11/archi.png)
+  ![design](images/project-11/project-setup.png)
 
 > ## INSTALL AND CONFIGURE ANSIBLE ON EC2 INSTANCE
 
@@ -212,3 +212,21 @@
   ![Changes in Jenkins](images/project-11/files-synced-jenkins.png)
 
   ![changes in console](images/project-11/files-in-console.png)
+
+> ## RUN FIRST ANSIBLE TEST
+
+- Following one of the videos from Darey.io, tried to ssh into the jenkins-ansible instance from vscode but got an error.
+
+  ![error](images/project-11/error.png)
+
+- I noticed that the error message was showing "permission denied". I reached out to the community, and I got help that the .pem file was not seen, hence, reason for permission denied.
+
+- Then, ran the following:
+
+  ![eval](images/project-11/eval.png)
+
+  ![success](images/project-11/wireshark-in-all-server.png)
+
+- Check all the servers to confirm that wireshark is installed. Confirmed on all servers that wireshark is installed.
+
+  ![confirm wireshark](images/project-11/confirm-from-individual-server.png)
