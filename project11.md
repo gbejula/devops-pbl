@@ -116,10 +116,10 @@
 
 - Save below inventory structure in the inventory/dev file to start configuring your development servers. Ensure to replace the IP addresses according to your own setup.
 
-```
-eval `ssh-agent -s`
-ssh-add <path-to-private-key>
-```
+  ```
+  eval `ssh-agent -s`
+  ssh-add <path-to-private-key>
+  ```
 
 - Confirm the key has been added with the command below, you should see the name of your key. This should be done from the command line
 
@@ -154,4 +154,61 @@ ssh-add <path-to-private-key>
 
 > ## CREATE A COMMON PLAYBOOK
 
--
+- In common.yml playbook, write configuration for repeatable, re-usable, and multi-machine tasks that is common to systems within the infrastructure.
+
+- Update the playbooks/common.yml file with following code:
+
+```
+---
+- name: update web, nfs and db servers
+  hosts: webservers, nfs, db
+  remote_user: ec2-user
+  become: yes
+  become_user: root
+  tasks:
+    - name: ensure wireshark is at the latest version
+      yum:
+        name: wireshark
+        state: latest
+
+- name: update LB server
+  hosts: lb
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  tasks:
+    - name: Update apt repo
+      apt:
+        update_cache: yes
+
+    - name: ensure wireshark is at the latest version
+      apt:
+        name: wireshark
+        state: latest
+```
+
+> ## UPDATE GIT WITH THE LATEST CODE
+
+- Commit the code into GitHub:
+
+- Use git commands to add, commit and push to the newly created branch on GitHub.
+
+  ```
+  git status
+
+  git add <selected files>
+
+  git commit -m "commit message"
+  ```
+
+- Create a Pull request (PR)
+
+- Review the code and if everything is fine, merge the code to the main branch.
+
+- Head back to the terminal, checkout from the branch into the main, and pull down the latest changes.
+
+- Jenkins will also trigger a job/build since there are changes in the github files.
+
+  ![Changes in Jenkins](images/project-11/files-synced-jenkins.png)
+
+  ![changes in console](images/project-11/files-in-console.png)
