@@ -58,7 +58,7 @@
 
   _The build failed_
 
-  _I discovered that the needed to change the branch to **main** instead of **master** since it has been changed by github_
+  _I discovered that I needed to change the branch to **main** instead of **master** since it has been changed by github_
 
   _The build was now successfully after the change_
 
