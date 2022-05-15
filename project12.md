@@ -102,3 +102,86 @@
   ![uninstalled wireshark](images/project-12/successfully-deleted.png)
 
   ![checked deleted wireshark](images/project-12/deleted-wireshark-from-all-servers-using-import.png)
+
+> ## STEP 3: CONFIGURE UAT WEBSERVERS WITH A ROLE 'WEBSERVER'
+
+- Launch 2 fresh EC2 instances using RHEL 8 image, we will use them as our uat servers, so give them names accordingly – Web1-UAT and Web2-UAT.
+
+- We could write tasks to configure Web Servers in the same playbook, but it would be too messy, instead, we will use a dedicated role to make our configuration reusable.
+
+  ![new webservers](images/project-12/new-webservers.png)
+
+- To create a role, you must create a directory called roles/, relative to the playbook file or in /etc/ansible/ directory.
+
+- There are two ways how you can create this folder structure:
+
+  - Use an Ansible utility called ansible-galaxy inside ansible-config-mgt/roles directory (you need to create roles directory upfront)
+
+  ```
+  mkdir roles
+  cd roles
+  ansible-galaxy init webserver
+  ```
+
+  - Create the directory/files structure manually
+
+  - Note: Choose either way, but since it store all your codes in GitHub, it is recommended to create folders and files there rather than locally on Jenkins-Ansible server.
+
+- After removing unnecessary directories and files, the roles structure should look like this
+
+  ![structure of roles](images/project-12/file-structure.png)
+
+- Update the inventory ansible-config-mgt/inventory/uat.yml file with IP addresses of your 2 UAT Web servers
+
+  ![uat webservers](images/project-12/uat-webservers.png)
+
+- In /etc/ansible/ansible.cfg file uncomment roles_path string and provide a full path to your roles directory roles_path = **/home/ubuntu/ansible-config-artifact/roles**, so Ansible could know where to find configured roles.
+
+- It is time to start adding some logic to the webserver role. Go into tasks directory, and within the main.yml file, start writing configuration tasks to do the following:
+
+  ```
+  Install and configure Apache (httpd service)
+  Clone Tooling website from GitHub https://github.com/<your-name>/tooling.git.
+  Ensure the tooling website code is deployed to /var/www/html on each of 2 UAT Web servers.
+  Make sure httpd service is started
+  ```
+
+- Hence, the **main.yml** file will consist of the following:
+
+```
+---
+- name: install apache
+  become: true
+  ansible.builtin.yum:
+    name: "httpd"
+    state: present
+
+- name: install git
+  become: true
+  ansible.builtin.yum:
+    name: "git"
+    state: present
+
+- name: clone a repo
+  become: true
+  ansible.builtin.git:
+    repo: https://github.com/<your-name>/tooling.git
+    dest: /var/www/html
+    force: yes
+
+- name: copy html content to one level up
+  become: true
+  command: cp -r /var/www/html/html/ /var/www/
+
+- name: Start service httpd, if not started
+  become: true
+  ansible.builtin.service:
+    name: httpd
+    state: started
+
+- name: recursively remove /var/www/html/html/ directory
+  become: true
+  ansible.builtin.file:
+    path: /var/www/html/html
+    state: absent
+```
