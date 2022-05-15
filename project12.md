@@ -135,7 +135,9 @@
 
   ![uat webservers](images/project-12/uat-webservers.png)
 
-- In /etc/ansible/ansible.cfg file uncomment roles_path string and provide a full path to your roles directory roles_path = **/home/ubuntu/ansible-config-artifact/roles**, so Ansible could know where to find configured roles.
+- In /etc/ansible/ansible.cfg file uncomment **roles_path** string and provide a full path to your roles directory roles_path = **/home/ubuntu/ansible-config-artifact/roles**, so Ansible could know where to find configured roles.
+
+  ![roles edit](images/project-12/roles-updated-in-ansible-file.png)
 
 - It is time to start adding some logic to the webserver role. Go into tasks directory, and within the main.yml file, start writing configuration tasks to do the following:
 
@@ -197,3 +199,35 @@
 - Hence, the site.yml file looks like:
 
   ![site file edited with uat](images/project-12/site-edited-for-uat-webserver.png)
+
+> ## STEP 5: COMMIT & TEST
+
+- Commit your changes, create a Pull Request and merge them to master branch, make sure webhook triggered two consequent Jenkins jobs, they ran successfully and copied all the files to your Jenkins-Ansible server into /home/ubuntu/ansible-config-mgt/ directory.
+
+  ![git codes](images/project-12/git-code-files.png)
+
+  ![all files](images/project-12/all-files-in-jenkins.png)
+
+  ![all files updated](images/project-12/all-files-updated-in-jenkins.png)
+
+  ![checking-jenkins-command line](images/project-12/checking-changes-in-jenkins-commandline.png)
+
+- Now run the playbook against your uat inventory and see what happens:
+
+  `sudo ansible-playbook -i /home/ubuntu/ansible-config-artifact/inventory/uat.yml /home/ubuntu/ansible-config-artifact/playbooks/site.yaml`
+
+- You should be able to see both of your UAT Web servers configured and you can try to reach them from your browser:
+
+  ```
+  http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php
+  or
+  http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php
+  ```
+
+  **_Web1 Output_**
+
+  ![web1](images/project-12/web1-output.png)
+
+  **_Web2 Output_**
+
+  ![web2](images/project-12/web2-output.png)
