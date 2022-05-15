@@ -185,3 +185,15 @@
     path: /var/www/html/html
     state: absent
 ```
+
+> ## STEP 4: REFERENCE 'WEBSERVER' ROLE
+
+- Within the **static-assignments** folder, create a new assignment file **uat-webservers.yml**. This is where you will reference the role.
+
+  ![uat webserver](images/project-12/uat-webservers.png)
+
+- Remember that the entry point to our ansible configuration is the site.yml file. Therefore, we need to refer the uat-webservers.yml role inside site.yml.
+
+- Hence, the site.yml file looks like:
+
+  ![site file edited with uat](images/project-12/site-edited-for-uat-webserver.png)
