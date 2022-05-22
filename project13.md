@@ -76,6 +76,8 @@
 
   ![git success](images/project-13/git-push-success.png)
 
+- Carry out git pull request and merge it to the main branch.
+
 > ## STEP 3: LOAD BALANCER ROLES
 
 - We want to be able to choose which Load Balancer to use, Nginx or Apache, so we need to have two roles respectively:
@@ -88,6 +90,8 @@
   - Decide if you want to develop your own roles, or find available ones from the community
   - Update both static-assignment and site.yml files to refer the roles
 
+    ![installed apache and nginx](images/project-13/apache%26nginx.png)
+
 - Important Hints:
 
   - Since you cannot use both Nginx and Apache load balancer, you need to add a condition to enable either one – this is where you can make use of variables.
@@ -98,4 +102,22 @@
 
   - Declare another variable in both roles load_balancer_is_required and set its value to false as well
 
+    ![enable apache and nginx](images/project-13/enable-apache-nginx.png)
+
   - Update both assignment and site.yml files respectively
+
+  - Loadbalancer.ynl should be created in the static-assignments file using the path in the documentation
+
+    ![load balancer](images/project-13/loadbalancer-file.png)
+
+- Enter the server, then change directory to ansible-config-artifact > roles > apache > defaults > edit vi main.yml. When edit the file, ensure there is no trailing space. This file is a readonly file, hence to save, use ":w !sudo tee %, then press 'L'". For more information on editing and saving a readonly file in Vim, check [Saving a read-only file edited in vi / vim](https://geekyboy.com/archives/629)
+
+  ![edit apache file](images/project-13/edit-apache-file.png)
+
+- Enter the server, then change directory to ansible-config-artifact > roles > nginx > defaults > edit vi main.yml
+
+  ![edit nginx file](images/project-13/edit-nginx-file.png)
+
+- Update of the site.yml file
+
+  ![site file](images/project-13/update-site-file.png)
