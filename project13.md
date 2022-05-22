@@ -121,3 +121,17 @@
 - Update of the site.yml file
 
   ![site file](images/project-13/update-site-file.png)
+
+- Now you can make use of env-vars\uat.yml file to define which loadbalancer to use in UAT environment by setting respective environmental variable to true.
+
+  - Activate load balancer, and enable nginx by setting these in the respective environment’s env-vars file.
+
+  ![changed](images/project-13/changed-status.png)
+
+- The same must work with apache LB, so you can switch it by setting respective environmental variable to true and other to false.
+
+- To test this, update inventory for each environment and run Ansible against each environment.
+
+  `ansible-playbook -i /home/ubuntu/ansible-config-artifact/inventory/uat.yml /home/ubuntu/ansible-config-artifact/playbooks.site.yml`
+
+  ![success](images/project-13/playbook-success3.png)
