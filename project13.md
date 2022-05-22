@@ -47,9 +47,15 @@
   git switch roles-feature
   ```
 
+  ![git initialization](images/project-13/step1.png)
+
 - Inside roles directory create your new MySQL role with ansible-galaxy install geerlingguy.mysql and rename the folder to mysql
 
   `mv geerlingguy.mysql/ mysql` - use **sudo** if permission is denied
+
+  ![mysql](images/project-13/step2.png)
+
+  ![mysql](images/project-13/step3.png)
 
 - Read README.md file, and edit roles configuration to use correct credentials for MySQL required for the tooling website.
   Now it is time to upload the changes into your GitHub:
@@ -59,6 +65,16 @@
   git commit -m "Commit new role files into GitHub"
   git push --set-upstream origin roles-feature
   ```
+
+  ![git commit](images/project-13/step4.png)
+
+- ### Git push failed because the remote for the git was in **https**, so I had to change git remote origin to **git**
+
+  ![git push failed](images/project-13/git-push-failed.png)
+
+- Changed the remote origin git, then git push was successful.
+
+  ![git success](images/project-13/git-push-success.png)
 
 > ## STEP 3: LOAD BALANCER ROLES
 
