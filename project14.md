@@ -205,7 +205,7 @@ ssh_args = -o ControlMaster=auto -o ControlPersist=30m -o ControlPath=/tmp/ansib
 
       stage('Checkout SCM') {
          steps{
-            git branch: 'feature/jenkinspipeline-stages', url: 'https://github.com/gbejula/ansible-config.git'
+            git branch: 'feature/jenkinspipeline-stages', url: 'https://github.com/TaiwoLawal/ansible-config.git'
          }
        }
 
@@ -262,3 +262,190 @@ parameters {
 ## CI/CD PIPELINE FOR TODO APPLICATION
 
 - The aim is to deploy the application onto servers directly from Artifactory rather than from git.
+
+- Fork and clone the below repository to the jenkins instance outside of the ansible-config_mgt folder
+
+  `https://github.com/darey-devops/php-todo.git`
+
+- On the Jenkins server, install PHP, its dependencies and Composer tool
+
+```
+ sudo apt install -y zip libapache2-mod-php phploc php-{xml,bcmath,bz2,intl,gd,mbstring,mysql,zip}
+
+ sudo apt install composer
+
+ sudo php /tmp/composer-setup.php sudo mv composer.phar /usr/bin/composer
+
+ sudo mv composer.phar /usr/bin/composer
+```
+
+- Install the Plot Plugin and Artifactory plugin in the Jenkins UI (Manage Jenkins)
+
+- The plot plugin will be used to display tests reports, and code coverage information and the Artifactory plugin will be used to easily upload code artifacts into an Artifactory server.
+
+- Create an instance for Artifactory and copy the ip address into the inventory/ci enviroment
+
+- Configure all settings in the playbook/site.yml , roles and static assignment so as to install Artifactory.
+
+- Edit the Jenkinfile to the below and push code
+
+```
+stage('Checkout SCM') {
+         steps{
+            git branch: 'main', url: 'https://github.com/gbejula/ansible-config-mgt.git'
+         }
+       }
+```
+
+- In Jenkins, go to the main branch and click on Build Parameters and change to ci, as such always change the inventory path in Jenkins dashboard.
+
+  ![](images/project-14/1.png)
+
+- Login into the Artifactory with port 8081 and enter username and password (admin, password), create new password
+
+  ![](images/project-14/2.png)
+
+- Create repository -> Select general repository -> Generic, enter Repository Key as PBL, save and finish
+
+- In Jenkins configure the artifactory server ID, URL and Credentials, run Test Connection
+
+  ![](images/project-14/3.png)
+
+- Integrate the Artifactory repository with Jenkins by creating a Jenkinsfile in the php-todo folder and copying the content below. The required file by PHP is .env so we are renaming env.sample to .env Composer is used by PHP to install all the dependent libraries used by the applicationphp artisan uses the .env file to setup the required database objects
+
+```
+pipeline {
+    agent any
+
+  stages {
+
+     stage("Initial cleanup") {
+          steps {
+            dir("${WORKSPACE}") {
+              deleteDir()
+            }
+          }
+        }
+
+    stage('Checkout SCM') {
+      steps {
+            git branch: 'main', url: 'https://github.com/gbejula/php-todo.git'
+      }
+    }
+
+    stage('Prepare Dependencies') {
+      steps {
+             sh 'mv .env.sample .env'
+             sh 'composer install'
+             sh 'php artisan migrate'
+             sh 'php artisan db:seed'
+             sh 'php artisan key:generate'
+      }
+    }
+  }
+}
+```
+
+- On the database server, create database and user by updating roles -> mysql -> defaults -> main.yml. Ensure the Ip address used in the database is the ip for Jenkins server.
+
+- Push the code and build (it should be done in the php-todo folder), ensure the parameter is in dev.
+
+- To confirm the database were created and user, launch the db (mysql-server) instance and execute the code below:
+
+  ```
+  sudo mysql
+  show databases;
+  select user, host from mysql.user;
+  ```
+
+- Create a new pipeline in blue ocean and link the php-todo repo to it. It will start building since there is a jenkinsfile in it
+
+## Connecting to MYSQL from Jenkins server
+
+- Set the bind address of the database of the MYSQL server to allow connections from remote hosts.
+
+- Change bind-address = 0.0.0.0 and restart mysql
+
+- Install mysql client on Jenkins in the php folder
+
+```
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo systemctl restart mysql
+sudo apt install mysql-client
+```
+
+- In the .env.sample of the mysql role update the database connectivity requirements with the screenshot below. The IP address used is for the database
+
+- Connect to the database from Jenkins
+
+  ![db](images/project-14/db.png)
+
+- Push the code in from php-todo folder
+
+- Update the Jenkinsfile in the php folder to include Unit tests step
+
+## SONARQUBE INSTALLATION
+
+- Even though we have implemented Unit Tests and Code Coverage Analysis with phpunit and phploc, we still need to implement Quality Gate to ensure that ONLY code with the required code coverage, and other quality standards make it through to the environments
+
+- Create an instance for Sonarqube, the minimum requirement is 4GB RAM and 2 vCPUs and update the Ip details in ansible-config inventory/ci and site.yml for complete installation.
+
+- Push the code and run from the build - ensure you comment out the unecesary playbooks
+
+- Some bugs came with the screenshot below, so we had to run ansible via command line.
+
+- To run the command we need to update the roles_path in ansible.cfg located in the deploy folder, just for the purpose of the Sonarqube installation
+
+- After updating the roles_path in the ansible.cfg, enter the following command in the terminal
+
+- Before running ansible-playbook ensure the ansible machine can talk to the server via SSH agent
+
+```
+roles_path=/home/ubuntu/ansible-config/roles
+export ANSIBLE_CONFIG=/home/ubuntu/ansible-config-mg/deploy/ansible.cfg
+ssh-add -l
+```
+
+- Install postgresql
+
+- Run ansible-playbook
+
+```
+ansible-galaxy collection install community.postgresql
+ansible-playbook -i inventory/ci playbooks/site.yml
+```
+
+- Connect to the sonarqube instance via port 9000, password and username is both admin.
+
+- In Jenkins, install SonarScanner plugin. Navigate to configure system in Jenkins. Add SonarQube server as shown below:
+
+![sonar](images/project-14/sonar.png)
+
+- Generate authentication token in SonarQube
+
+- Configure Quality Gate Jenkins Webhook in SonarQube – The URL should point to your Jenkins server http://{JENKINS_HOST}/sonarqube-webhook/
+
+- Setup SonarQube scanner from Jenkins – Global Tool Configuration
+
+  ![sonar2](images/project-14/sonar2.png)
+
+- Update Jenkins Pipeline to include SonarQube scanning and Quality Gate, it should be placed before "Package Artifact". This needs to be done before we can edit sonar-scanner.properties
+
+```
+    stage('SonarQube Quality Gate') {
+        environment {
+            scannerHome = tool 'SonarQubeScanner'
+        }
+        steps {
+            withSonarQubeEnv('sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+
+        }
+    }
+    }
+```
+
+![](images/project-14/end1.png)
+![](images/project-14/end2.png)
+![](images/project-14/end3.png)
