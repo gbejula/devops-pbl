@@ -246,9 +246,15 @@ yum install -y ansible
 
 _The ALB for the webservers should not be internet facing. We need to create Load Balancers to be placed in the relevant private subnet_
 
+![load balancer1](images/project-15/lb1.png)
+![load balancer2](images/project-15/lb2.png)
+![load balancer3](images/project-15/lb3.png)
+
 - Select internal load balancer
 - click on listeners
 - _from the screenshot, it could be depicted that every traffic that comes into the load balancer forwards to Wordpress target_
+
+  ![load balancer4](images/project-15/lb4.png)
 
 - configure a rule so that we can cache tooling request and forward to the tooling target
 
@@ -263,6 +269,8 @@ _The ALB for the webservers should not be internet facing. We need to create Loa
 - Select the VPC you created, select the two AZs and choose the private subnets
 - Select the EFS security group
 
+  ![efs](images/project-15/efs.png)
+
 ## Step 4: Setup RDS
 
 - _before we commence on we need to create KMS key (to encrypt RDS instance) and subnet group (placed in private)_
@@ -270,6 +278,8 @@ _The ALB for the webservers should not be internet facing. We need to create Loa
 - Click create key
 - Make sure it's symmetric
 - Give the key an alias
+
+  ![rds](images/project-15/rds.png)
 
 ## Step 4a: Create a DB Subnet Group
 
@@ -279,7 +289,9 @@ _The ALB for the webservers should not be internet facing. We need to create Loa
 - Enter the name, description and select your VPC
 - Under Add subnets, select the two AZs your VPC is in and select the two private data layer subnets.
 
-## Step 4.2: Create RDS Instance
+  ![subnet groups](images/project-15/9.png)
+
+## Step 4b: Create RDS Instance
 
 - Navigate to RDS Management Console
 - Click Create database
@@ -295,6 +307,8 @@ _The ALB for the webservers should not be internet facing. We need to create Loa
 - Leave everything else, scroll down to Encryption and select the KMS key you created
 - Scroll down and click Create database
 
+  ![rds-expanded](images/project-15/rds-database.png)
+
 ## Step 5 : Update userdata with access point & end point
 
 - Create access point next which will specify where the webservers will mount with, thus creating 2 mount points for Tooling and Wordpress servers each.
@@ -307,7 +321,11 @@ _The ALB for the webservers should not be internet facing. We need to create Loa
   - paste into wordpress userdata
   - Repeat for tooling
 
-- copy and Paste the rds end-point in the wordpress userdata and tooling userdata
+  ![access-point](images/project-15/wordpress.png)
+
+- Copy and Paste the rds end-point in the wordpress userdata and tooling userdata
+
+  ![database](images/project-15/8.png)
 
 - Update the reverse.conf file with the domain name
 
@@ -343,4 +361,10 @@ show databases;
 
 - Check if All target group are healthy
 
+  ![target](images/project-15/2.png)
+
 - Output
+
+  ![wordpress](images/project-15/w1.png)
+
+  ![login page](images/project-15/w2.png)
