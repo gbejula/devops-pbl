@@ -47,7 +47,7 @@ Create Autoscaling group : The two requirements are Launch Templates and Load Ba
 
 The following steps below must take place before creating the Autoscaling group
 
-# Step 2a: Setup Compute Resources for Nginx
+## Step 2a: Setup Compute Resources for Nginx
 
 - Provision an EC2 Instances for Nginx, bastion and webserver
   - Create a t2.micro RHEL 8 instance in any of your two public AZs
