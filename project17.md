@@ -305,22 +305,22 @@ resource "aws_route_table_association" "public-subnets-assoc" {
 ```
 # The entire section create a certiface, public zone, and validate the certificate using DNS method
 
-# Create the certificate using a wildcard for all the domains created in oche.link
-resource "aws_acm_certificate" "oche" {
-  domain_name       = "*.oche.link"
+# Create the certificate using a wildcard for all the domains created in gbejula.click
+resource "aws_acm_certificate" "gbejula" {
+  domain_name       = "*.gbejula.click"
   validation_method = "DNS"
 }
 
 # calling the hosted zone
-data "aws_route53_zone" "oche" {
-  name         = "oche.link"
+data "aws_route53_zone" "gbejula" {
+  name         = "gbejula.click"
   private_zone = false
 }
 
 # selecting validation method
-resource "aws_route53_record" "oche" {
+resource "aws_route53_record" "gbejula" {
   for_each = {
-    for dvo in aws_acm_certificate.oche.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.gbejula.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
@@ -332,19 +332,19 @@ resource "aws_route53_record" "oche" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.oche.zone_id
+  zone_id         = data.aws_route53_zone.gbejula.zone_id
 }
 
 # validate the certificate through DNS method
-resource "aws_acm_certificate_validation" "oche" {
-  certificate_arn         = aws_acm_certificate.oche.arn
-  validation_record_fqdns = [for record in aws_route53_record.oche : record.fqdn]
+resource "aws_acm_certificate_validation" "gbejula" {
+  certificate_arn         = aws_acm_certificate.gbejula.arn
+  validation_record_fqdns = [for record in aws_route53_record.gbejula : record.fqdn]
 }
 
 # create records for tooling
 resource "aws_route53_record" "tooling" {
-  zone_id = data.aws_route53_zone.oche.zone_id
-  name    = "tooling.oche.link"
+  zone_id = data.aws_route53_zone.gbejula.zone_id
+  name    = "tooling.gbejula.click"
   type    = "A"
 
   alias {
@@ -356,8 +356,8 @@ resource "aws_route53_record" "tooling" {
 
 # create records for wordpress
 resource "aws_route53_record" "wordpress" {
-  zone_id = data.aws_route53_zone.oche.zone_id
-  name    = "wordpress.oche.link"
+  zone_id = data.aws_route53_zone.gbejula.zone_id
+  name    = "wordpress.gbejula.click"
   type    = "A"
 
   alias {
@@ -665,7 +665,7 @@ resource "aws_lb_listener" "nginx-listner" {
   load_balancer_arn = aws_lb.ext-alb.arn
   port              = 443
   protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate_validation.oche.certificate_arn
+  certificate_arn   = aws_acm_certificate_validation.gbejula.certificate_arn
 
   default_action {
     type             = "forward"
@@ -746,7 +746,7 @@ resource "aws_lb_listener" "web-listener" {
   load_balancer_arn = aws_lb.ialb.arn
   port              = 443
   protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate_validation.oyindamola.certificate_arn
+  certificate_arn   = aws_acm_certificate_validation.gbejula.certificate_arn
 
   default_action {
     type             = "forward"
@@ -767,8 +767,300 @@ resource "aws_lb_listener_rule" "tooling-listener" {
 
   condition {
     host_header {
-      values = ["tooling.oyindamola.gq"]
+      values = ["tooling.gbejula.click"]
     }
   }
 }
+```
+
+- Run terraform plan and terraform apply --auto-approve
+
+> ## AWS IDENTITY AND ACCESS MANAGEMENT
+
+- IAM and Roles
+
+- Create a file for roles - _roles.tf_
+
+```
+resource "aws_iam_role" "ec2_instance_role" {
+name = "ec2_instance_role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "aws assume role"
+    },
+  )
+}
+
+
+#  IAM policy roles
+resource "aws_iam_policy" "policy" {
+  name        = "ec2_instance_policy"
+  description = "A test policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+
+  })
+
+  tags = merge(
+    var.tags,
+    {
+      Name =  "aws assume policy"
+    },
+  )
+
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach" {
+  role       = aws_iam_role.ec2_instance_role.name
+  policy_arn = aws_iam_policy.policy.arn
+}
+
+resource "aws_iam_instance_profile" "ip" {
+  name = "aws_instance_profile_test"
+  role = aws_iam_role.ec2_instance_role.name
+}
+```
+
+- Afterwards, run terraform plan
+
+- We need to configure the Auto Scaling Group (ASG) for EC2 depending on the application traffic.
+
+- Create asg-bastioin-nginx.tf
+
+```
+# Get list of availability zones
+data "aws_availability_zones" "available-bastion" {
+  state = "available"
+}
+
+# creating sns topic for all the auto scaling groups
+resource "aws_sns_topic" "ACS-sns" {
+  name = "Default_CloudWatch_Alarms_Topic"
+}
+
+
+# creating notification for all the auto scaling groups
+resource "aws_autoscaling_notification" "aws_notifications" {
+  group_names = [
+    aws_autoscaling_group.bastion-asg.name,
+    aws_autoscaling_group.nginx-asg.name,
+    aws_autoscaling_group.wordpress-asg.name,
+    aws_autoscaling_group.tooling-asg.name,
+  ]
+  notifications = [
+    "autoscaling:EC2_INSTANCE_LAUNCH",
+    "autoscaling:EC2_INSTANCE_TERMINATE",
+    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
+  ]
+
+  topic_arn = aws_sns_topic.ACS-sns.arn
+}
+
+
+resource "random_shuffle" "az_list" {
+  input = data.aws_availability_zones.available-bastion.names
+}
+
+
+
+resource "aws_launch_template" "bastion-launch-template" {
+  name                   = "bastion-launch-template"
+  instance_type          = "t2.micro"
+  image_id               = var.ami
+  vpc_security_group_ids = [aws_security_group.bastion-sg.id]
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ip.id
+  }
+
+  key_name = var.keypair
+
+  placement {
+    availability_zone = "random_shuffle.az_list.result"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "bastion-launch-template"
+    }
+  }
+
+  user_data = filebase64("${path.module}/bastion.sh")
+}
+
+
+# ---- Autoscaling for bastion  hosts
+
+
+resource "aws_autoscaling_group" "bastion-asg" {
+  name                      = "bastion-asg"
+  max_size                  = 2
+  min_size                  = 2
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+  desired_capacity          = 2
+
+  # Where you place in your subnet
+  vpc_zone_identifier = [aws_subnet.public[0].id, aws_subnet.public[1].id]
+
+  launch_template {
+    id      = aws_launch_template.bastion-launch-template.id
+    version = "$Latest"
+  }
+  tag {
+    key                 = "Name"
+    value               = "ACS-Bastion"
+    propagate_at_launch = true
+  }
+
+}
+
+resource "aws_launch_template" "nginx-launch-template" {
+  name                   = "nginx-launch-template"
+  instance_type          = "t2.micro"
+  image_id               = var.ami
+  vpc_security_group_ids = [aws_security_group.nginx-sg.id]
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ip.id
+  }
+
+  key_name = var.keypair
+
+  placement {
+    availability_zone = "random_shuffle.az_list.result"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "nginx-launch-template"
+    }
+  }
+
+  user_data = filebase64("${path.module}/nginx.sh")
+}
+
+
+# ------ Autoscslaling group for reverse proxy nginx ---------
+
+resource "aws_autoscaling_group" "nginx-asg" {
+  name                      = "nginx-asg"
+  max_size                  = 2
+  min_size                  = 1
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+  desired_capacity          = 1
+
+  vpc_zone_identifier = [aws_subnet.public[0].id, aws_subnet.public[1].id]
+
+  launch_template {
+    id      = aws_launch_template.nginx-launch-template.id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "ACS-nginx"
+    propagate_at_launch = true
+  }
+
+
+}
+
+# attaching autoscaling group of nginx to external load balancer
+resource "aws_autoscaling_attachment" "asg_attachment_nginx" {
+  autoscaling_group_name = aws_autoscaling_group.nginx-asg.id
+  alb_target_group_arn   = aws_lb_target_group.nginx-tgt.arn
+}
+```
+
+- We define the variables for the above
+
+```
+variable "ami" {
+  type        = string
+  description = "AMI ID for the launch template"
+}
+
+variable "keypair" {
+  type        = string
+  description = "Key pair for the instances"
+}
+
+variable "account_no" {
+  type        = number
+  description = "the account number"
+}
+```
+
+- terraform.tfvars
+
+```
+ami = "ami-0fb653ca2d3203ac1"
+
+keypair = "EC2 Tutorial"
+```
+
+- Bastion.sh:userdata
+
+```
+#!/bin/bash
+yum install -y mysql
+yum install -y git tmux
+yum install -y ansible
+```
+
+- nginx.sh: userdata
+
+```
+#!/bin/bash
+yum install -y nginx
+systemctl start nginx
+systemctl enable nginx
+git clone https://github.com/Taiwolawal/ACS-project-config.git
+mv /ACS-project-config/reverse.conf /etc/nginx/
+mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf-distro
+cd /etc/nginx/
+touch nginx.conf
+sed -n 'w nginx.conf' reverse.conf
+systemctl restart nginx
+rm -rf reverse.conf
+rm -rf /ACS-project-config
 ```
