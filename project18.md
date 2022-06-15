@@ -60,3 +60,22 @@ resource "aws_dynamodb_table" "terraform_locks" {
 - outputs.tf (optional, if you need to refer outputs from any of these resources in your root module)
 - variables.tf (as we learned before - it is a good practice not to hard code the values and use variables)
 ```
+
+- It is also recommended to configure providers and backends sections in separate files but should be placed in the root module.
+
+**IMPORTANT**: In the configuration sample from the repository, you can observe two examples of referencing the module:
+
+In the configuration sample from the repository, you can observe two examples of referencing the module:
+
+```
+module "VPC" {
+  source = "./modules/VPC"
+  region = var.region
+  ...
+```
+
+> ## COMPLETE THE TERRAFORM CONFIGURATION
+
+- Create a new folder module
+
+_New folder structure_
