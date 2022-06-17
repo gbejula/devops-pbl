@@ -100,3 +100,64 @@ terraform apply --auto-approve
 ```
 
 - See the resources created.
+
+**Target Group**
+
+![target group](images/project-18/target-group.png)
+
+**Security Group**
+
+![security group](images/project-18/security-group.png)
+
+**VPC**
+
+![vpc](images/project-18/vpc.png)
+
+**Subnets**
+
+![subnets](images/project-18/subnets.png)
+
+**Route tables**
+
+![route tables](images/project-18/route-tables.png)
+
+**Dynamo DB**
+
+![dynamo](images/project-18/dynamo.png)
+
+> ## Configure the Backend
+
+- Create a file named backend.tf and add the following code
+
+```
+terraform {
+  backend "s3" {
+    bucket         = "dev-terraform-bucket"
+    key            = "global/s3/terraform.tfstate"
+    region         = "eu-central-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
+```
+
+- Afterward, run the following code below for it to be bundled.
+
+```
+terraform init
+terraform plan
+```
+
+![s3](images/project-18/s3-bucket.png)
+
+- Remember to destroy the code to ensure that you are not charged exccessively by AWS
+
+- Comment out the backend code
+
+- Run the command
+
+  `terraform init -migrate-state`
+
+- Destroy the code
+
+  `terraform destroy --auto-approve`
