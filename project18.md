@@ -78,4 +78,25 @@ module "VPC" {
 
 - Create a new folder module
 
-_New folder structure_
+_File structure for project 18_
+
+![fs1](images/project-18/file-structure-1.png)
+![fs1](images/project-18/file-structure-2.png)
+
+- Run the following commands to create the resources in AWS console
+
+```
+# To format the terraform codes
+terraform fmt
+
+# Check the validity of the code for errors
+terraform validate
+
+# create the plans
+terraform plan
+
+# apply the created plan if everything looks fine
+terraform apply --auto-approve
+```
+
+- See the resources created.
