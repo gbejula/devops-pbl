@@ -17,7 +17,7 @@
 
 - Set up MySQL in container
 
-> ## STEP 1: PULL MYSQL DOCKER IMAGE FROM DOCKER HUB REGISTRY
+> ### STEP 1: PULL MYSQL DOCKER IMAGE FROM DOCKER HUB REGISTRY
 
 - Start by pulling the appropriate Docker image for MySQL. You can download a specific version or opt for the latest release, as seen in the following command:
 
@@ -35,7 +35,7 @@
 
   ![docker images](images/project-20/check-docker-images.png)
 
-> ## STEP 2: DEPLOY THE MYSQL CONTAINER TO DOCKER ENGINE
+> ### STEP 2: DEPLOY THE MYSQL CONTAINER TO DOCKER ENGINE
 
 - Once the image is available, move on to deploying a new MySQL container with the command below:
 
@@ -55,3 +55,28 @@
   ```
 
   ![docker running](images/project-20/running-mysql-container.png)
+
+> ### Step 3: Connecting to the MySQL Docker Container
+
+Approach 1
+
+- Connecting directly to the container running the MySQL server:
+
+```
+docker exec -it mysql bash
+
+or
+
+$ docker exec -it mysql mysql -uroot -p
+```
+
+Provide the root password when prompted. With that, you’ve connected the MySQL client to the server.
+
+Finally, change the server root password to protect your database. Exit the the shell with exit command Flags used
+
+- exec used to execute a command from bash itself
+- -it makes the execution interactive and allocate a pseudo-TTY
+- bash this is a unix shell and its used as an entry-point to interact with our container
+- mysql The second mysql in the command "docker exec -it mysql mysql -uroot -p" serves as the entry point to interact with mysql container just like bash or sh
+- -u mysql username
+- -p mysql password

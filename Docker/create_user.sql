@@ -1,4 +1,1 @@
-CREATE USER 'gbenga'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON * . * TO 'gbenga'@'%'; 
-FLUSH PRIVILEGES;
-CREATE DATABASE toolingdb;
+CREATE USER ''@'%' IDENTIFIED BY ''; GRANT ALL PRIVILEGES ON * . * TO ''@'%'; 
