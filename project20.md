@@ -158,10 +158,111 @@ Flags used
 
   ![container not running](images/project-20/server-not-running2.png)
 
-- Then ran, commamnd
+- Then ran, command
 
   ```
   docker container start name or container ID
   ```
 
   ![container running](images/project-20/server-starting.png)
+
+  ![container healthy](images/project-20/healthy.png)
+
+- As you already know, it is best practice not to connect to the MySQL server remotely using the root user. Therefore, we will create an SQL script that will create a user we can use to connect remotely.
+
+- Create a file and name it create_user.sql and add the below code in the file:
+
+  ```
+  CREATE USER ''@'%' IDENTIFIED BY ''; GRANT ALL PRIVILEGES ON * . * TO ''@'%';
+  ```
+
+- Ensure you are in the directory create_user.sql file is located or declare a path
+
+  ```
+  docker exec -i mysql-server mysql -uroot -p$MYSQL_PW < create_user.sql
+  ```
+
+  ![create user](images/project-20/create_user.png)
+
+> ### Connecting to the MySQL server from a second container running the MySQL client utility
+
+- Run the MySQL Client Container:
+
+  ```
+  docker run --network tooling_app_network --name mysql-client -it --rm mysql mysql -h mysqlserverhost -u  -p
+  ```
+
+  ![mysql](images/project-20/network-to-mysql.png)
+
+  - --name gives the container a name
+  - -it runs in interactive mode and Allocate a pseudo-TTY
+  - --rm automatically removes the container when it exits
+  - --network connects a container to a network
+  - -h a MySQL flag specifying the MySQL server Container hostname
+  - -u user created from the SQL script
+  - admin username-for-user-created-from-the-SQL-script-create_user.sql
+  - -p password specified for the user created from the SQL script
+
+> ### Prepare database schema
+
+- Clone the Tooling-app repository from:
+
+  ```
+  git clone https://github.com/darey-devops/tooling.git
+  ```
+
+  ![git clone](images/project-20/git-clone.png)
+
+- On the terminal, export the location of the SQL file
+
+  ```
+  export tooling_db_schema=../html/tooling_db_schema.sql
+  ```
+
+- Verify that the path is exported
+
+- Use the SQL script to create the database and prepare the schema. With the docker exec command, you can execute a command in a running container.
+
+  ```
+  docker exec -i mysql-server mysql -uroot -p$MYSQL_PW < $tooling_db_schema
+  ```
+
+  ![tooling schema](images/project-20/tooling-schema.png)
+
+- Update the .env file with connection details to the database
+
+  ```
+  edit this file
+  sudo vi .env
+
+  MYSQL_IP=mysqlserverhost
+  MYSQL_USER=username
+  MYSQL_PASS=client-secrete-password
+  MYSQL_DBNAME=toolingdb
+  ```
+
+- Run the Tooling App
+
+Containerization of an application starts with creation of a file with a special name - 'Dockerfile' (without any extensions). This can be considered as a 'recipe' or 'instruction' that tells Docker how to pack your application into a container. In this project, you will build your container from a pre-created Dockerfile, but as a DevOps, you must also be able to write Dockerfiles.
+
+- Ensure you are inside the directory "tooling" that has the file Dockerfile and build your container :
+
+  ```
+  docker build -t tooling:0.0.1 .
+  ```
+
+  ![docker build](images/project-20/docker-build.png)
+
+- Run the container
+
+  ```
+  docker build -t tooling:0.0.1 .
+  ```
+
+  ![docker build](images/project-20/docker-build.png)
+
+-
+
+If everything works, you can open the browser and type _**http://localhost:8085**_
+
+![success](images/project-20/output.png)
