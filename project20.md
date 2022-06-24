@@ -265,4 +265,4 @@ Containerization of an application starts with creation of a file with a special
 
 If everything works, you can open the browser and type _**http://localhost:8085**_
 
-![success](images/project-20/output.png)
+![success](images/project-20/result.png)
