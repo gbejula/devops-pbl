@@ -261,7 +261,7 @@ Containerization of an application starts with creation of a file with a special
 
   ![docker build](images/project-20/docker-build.png)
 
--
+  ![docker running](images/project-20/running.png)
 
 If everything works, you can open the browser and type _**http://localhost:8085**_
 
