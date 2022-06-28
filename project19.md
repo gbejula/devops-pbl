@@ -10,6 +10,8 @@
 
 - Installed packer on computer
 
+![packer](images/project-19/packer.png)
+
 - Build AMIs with packer
 
 - Ran the following packer command
