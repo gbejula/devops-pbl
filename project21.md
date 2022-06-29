@@ -79,3 +79,21 @@ sudo mv cfssl cfssljson /usr/local/bin/
 - kube-proxy
 
 ## DISTRIBUTE THE CERTIFICATE TO THE RESPECTIVE INSTANCES
+
+## CREATE KUBERNETES CONFIGURATION FILE USING KUBECTL
+
+## SETUP ENCRYPTION USING ETCD
+
+## BOOTSTRAP THE CONTROL PLANE
+
+## TEST THE MASTER NODES
+
+![testing master1](images/project-21/1.png)
+
+![testing master2](images/project-21/2.png)
+
+## CONFIGURE THE WORKER NODES
+
+## TEST THE WORKER NODES
+
+![test worker nodes](images/project-21/3.png)
